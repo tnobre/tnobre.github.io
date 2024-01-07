@@ -184,7 +184,7 @@ $(document).ready(function () {
         },
         data: {
             // Event title
-            title: "Casamento da Glau e do Tiago",
+            title: "Casamento Glau e Tiago",
 
             // Event start date
             start: new Date('May 25, 2024 09:30'),
