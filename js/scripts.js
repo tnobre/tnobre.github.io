@@ -155,8 +155,6 @@ $(document).ready(function () {
 
             '<div class="g-plusone" data-size="medium"></div>';
 
-        // '<iframe src="https://plusone.google.com/_/+1/fastbutton?bsv&amp;size=medium&amp;url=' + encodeURIComponent(window.location) + '" allowtransparency="true" frameborder="0" scrolling="no" title="+1" style="width:105px; height:21px;"></iframe>';
-
         share_bar[i].innerHTML = html;
         share_bar[i].style.display = 'inline-block';
     }
@@ -184,7 +182,7 @@ $(document).ready(function () {
         },
         data: {
             // Event title
-            title: "Casamento Glau e Tiago",
+            title: "Casamento da Glau e do Tiago",
 
             // Event start date
             start: new Date('May 25, 2024 09:30'),
@@ -197,10 +195,10 @@ $(document).ready(function () {
             end: new Date('May 25, 2024 17:30'),
 
             // Event Address
-            address: 'Pça. Domingos Correia da Cruz, 140 - Santana',
+            address: '',
 
             // Event Description
-            description: "Venha celebrar conosco : )"
+            description: ""
         }
     });
 
@@ -210,17 +208,24 @@ $(document).ready(function () {
     /********************** RSVP **********************/
     $('#rsvp-form').on('submit', function (e) {
         e.preventDefault();
-        var data = $(this).serialize();
 
-        $('#alert-wrapper').html(alert_markup('info', '<strong>Just a sec!</strong> We are saving your details.'));
+        var formDataArray = $(this).serializeArray();
+        var data = {};
 
-        if (MD5($('#invite_code').val()) !== '1'
-            && MD5($('#invite_code').val()) !== '2ac7f43695eb0479d5846bb38eec59cc') {
-            $('#alert-wrapper').html(alert_markup('danger', '<strong>Sorry!</strong> Your invite code is incorrect.'));
+        // Convert the form data array into a JSON object
+        formDataArray.forEach(function (entry) {
+          data[entry.name] = entry.value;
+        });
+
+        data = JSON.stringify(data);
+
+        $('#alert-wrapper').html(alert_markup('info', '<strong>Só um segundo!</strong> Estamos salvando seus detalhes.'));
+
+        if (MD5($('#invite_code').val()) !== '8c1b6fa97c4288a4514365198566c6fa') {
+            $('#alert-wrapper').html(alert_markup('danger', '<strong>Desculpe!</strong> Código incorreto.'));
         } else {
-            $.post('https://script.google.com/macros/s/.../exec', data)
+            $.post('https://script.google.com/macros/s/AKfycbyENDP7tKOc8KAtiN_2DggdYCEiG-NwIHbpPqYn3I40P7gUUuIC1pVowx0ubPuc5eIx/exec', data)
                 .done(function (data) {
-                    console.log(data);
                     if (data.result === "error") {
                         $('#alert-wrapper').html(alert_markup('danger', data.message));
                     } else {
@@ -229,8 +234,12 @@ $(document).ready(function () {
                     }
                 })
                 .fail(function (data) {
-                    console.log(data);
-                    $('#alert-wrapper').html(alert_markup('danger', '<strong>Sorry!</strong> There is some issue with the server. '));
+                    if (data.status !== 200) {
+                        $('#alert-wrapper').html(alert_markup('danger', '<strong>Desculpe!</strong> Há algo de errado com o servidor. '));
+                    } else {
+                        $('#alert-wrapper').html('');
+                        $('#rsvp-modal').modal('show');
+                    }
                 });
         }
     });
@@ -241,7 +250,7 @@ $(document).ready(function () {
 
 // Google map
 function initMap() {
-    var location = {lat: 22.5932759, lng: 88.27027720000001};
+    var location = {lat: -23.490801857294215, lng: -46.633964562862154};
     var map = new google.maps.Map(document.getElementById('map-canvas'), {
         zoom: 15,
         center: location,
@@ -255,7 +264,7 @@ function initMap() {
 }
 
 function initBBSRMap() {
-    var la_fiesta = {lat: 20.305826, lng: 85.85480189999998};
+    var la_fiesta = {lat: -23.490801857294215, lng: -46.633964562862154};
     var map = new google.maps.Map(document.getElementById('map-canvas'), {
         zoom: 15,
         center: la_fiesta,
